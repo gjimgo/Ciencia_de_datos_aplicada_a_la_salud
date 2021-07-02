@@ -60,7 +60,7 @@ El algoritmo _ARM_ (_Association Rules Mining_, por sus siglas en inglés) surge
 
 Un ejemplo de las reglas de asociación, considerando el modelo de un supermercado para la definición del algoritmo por parte de _Rakesh Agrawal, Tomasz Imielinski_ y _Arun Swami_ (Agrawal, Imielinski, & Swami, 1993, pág. 207); es la mayoría de personas que compran pan, también compran leche. Por tanto, en lenguaje matemático sería:
 
-              inline equation: $F(Pan) => Leche$
+                              F(Pan) => Leche
               
 La parte izquierda de la función se llama _antecedente_ y la parte derecha se denomina _consecuente_ (Jiménez Martínez, 2018). El descubrimiento de las reglas de asociación permite desarrollar estrategias de mercadeo con fines de aumentar las ventas, aunque también ha tenido aplicación en campos como la medicina, meteorología, detección de fraudes bancarios, prevención de fallas en aeronaves, entre otras áreas. 
 
@@ -76,7 +76,7 @@ El área de las imágenes médicas es adecuada para la extracción de informaci�
 Con el fin de realizar de manera sencilla el tratamiento de los datos, se ha migrado el conjunto de datos a un formato CSV, sin alterar los registros originales del archivo.
 
 Para realizar el proceso de Extracción, Transformación y Carga de los datos, esencial para analizar la serie de los datos históricos; se requiere el cargue de unas librerias definidas por el lenguaje de programación R.
-```{r}
+```{r message=FALSE, warning=FALSE}
 library(readr)
 library(plyr)
 library(dplyr)
@@ -93,7 +93,8 @@ library(sqldf)
 ```{r}
 #Se carga el conjunto de datos
 sarco <- read.csv("sarcopenia_data.csv")
-#Despliega las cabeceras o nombres de las columnas, las cuales corresponden a las variables.
+#Despliega las cabeceras o nombres de las columnas,
+#las cuales corresponden a las variables.
 names(sarco)                     
 ```
 ```{r}
@@ -105,7 +106,8 @@ nrow(sarco)
 ncol(sarco)     
 ```
 ```{r}
-#Ofrece una previsualización del tipo de dato de cada variable y su contenido, así como  el número de registros.
+#Ofrece una previsualización del tipo de dato de cada variable
+#y su contenido, así como  el número de registros.
 str(sarco)
 ```
 ```{r}
@@ -115,7 +117,8 @@ sarco <- sarco[complete.cases(sarco), ]
 nrow(sarco)
 ```
 ```{r}
-#Sentencia que limpia las filas que tienen valores vacios, y guarda los nuevos registros en la variable sarco1
+#Sentencia que limpia las filas que tienen valores vacios,
+#y guarda los nuevos registros en la variable sarco1
 sarco1 <- filter(sarco, !(is.na(Symptom) | sarco$Symptom == ""))
 #Confirma el nuevo número de registros, almacenados en sarco1
 nrow(sarco1)
@@ -127,9 +130,13 @@ head(sarco1, n=5)
 En el resultado de la sentencia anterior se visualiza que el paciente 2 (PatientID = 2) tiene duplicado el síntoma de Pancreatic_Neoplasms. Por tanto, para no disponer de datos duplicados y posteriormente generar información veraz, se procede a continuación a mantener sólo datos únicos.
 
 ```{r}
-#Sentencia SQL que permite mantener registros únicos por paciente. Es decir, elimina los valores duplicados como se visualizaba en la consulta anterior para sarco1.
+#Sentencia SQL que permite mantener registros únicos por paciente.
+#Es decir, elimina los valores duplicados como se visualizaba
+#en la consulta anterior para sarco1.
 sarco2 <- sqldf('SELECT DISTINCT * FROM sarco1')
-#Confirma el nuevo número de registros, almacenados en sarco2, luego de eliminar valores duplicados en el conjunto de datos sarco1.
+#Confirma el nuevo número de registros,
+#almacenados en sarco2,
+#luego de eliminar valores duplicados en el conjunto de datos sarco1.
 nrow(sarco2)
 ```
 ```{r}
@@ -138,14 +145,17 @@ head(sarco2, n=5)
 ```
 Eventualmente, el PatientID 2 no dispone ahora del valor duplicado, situación similar con los registros restantes, luego de eliminar 1649 valores duplicados.
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 #Imprime las frecuencias o cantidad de incidencias por síntoma y enfermedad.
 sarco2 %>% count("Symptom")
 ```
-```{r}
-#Crea el factor de Sympton para hacer el group_by. Es decir, se modifica la naturaleza de la variable Sympton con fines de hacer el conteo
+```{r, results='hide', message=FALSE, warning=FALSE, paged.print=FALSE}
+#Crea el factor de Sympton para hacer el group_by. Es decir,
+#se modifica la naturaleza de la variable Sympton con fines 
+#de hacer el conteo
 sarco2 %>% mutate(Symptom = as.factor(Symptom))
 ```
+
 ```{r}
 #Impresión del número de casos por síntoma y enfermedad.
 detach("package:plyr", unload=TRUE)
@@ -168,12 +178,15 @@ coord_flip()
 
 Antes de emplear cualquier algoritmo de regla de asociación, se requiere transformar los datos desde el conjunto de datos anterior, insertando transacciones de modo que todos los síntomas y enfermedades se encuentran en una sola fila.
 
-```{r}
-#Realiza una ordenación del conjunto de datos, almacenándolo en la variable sarco2.sorted
+```{r message=FALSE, warning=FALSE}
+#Realiza una ordenación del conjunto de datos,
+#almacenándolo en la variable sarco2.sorted
 sarco2.sorted <- sarco2[order(sarco2$Symptom),]
 library(plyr)
 
-#La función ddply() recibe el data frame, lo recorta en fragmentos basados en uno o más factores, para luego traer los resultados como un nuevo conjunto de datos llamado itemList.
+#La función ddply() recibe el data frame, lo recorta en fragmentos basados
+#en uno o más factores, para luego traer los resultados
+#como un nuevo conjunto de datos llamado itemList.
 itemList <- ddply(sarco2,c("PatientID"),function(df1)paste(df1$Symptom,collapse = ","))
 ```
 
@@ -191,7 +204,7 @@ Luego de generar el nuevo conjunto de datos, se crea un nuevo archivo en formato
 
 El nuevo conjunto de datos almacena las transacciones que se generan de acuerdo al diagnóstico médico.
 
-```{r}
+```{r, results='hold'}
 #Carga y lee el conjunto de transacciones
 tr <- read.transactions('sarcopenia_transaction.csv', format = 'basket', sep=',')
 summary(tr)
@@ -216,12 +229,12 @@ Para obtener las reglas de asociación se usa el algoritmo Apriori, disponible e
 Se asigna un soporte de 0.001 y una confidencia de 0.8 para generar todas las reglas que tienen por lo menos un soporte de 0.1% y una confidencia mínima de 80%
 Seguidamente se hace la ordenación de las reglas por conficencia decreciente
 
-```{r}
+```{r, results='hold'}
 rules <- apriori(tr, parameter = list(supp=0.001, conf=0.8))
 ```
 
 
-```{r}
+```{r, results='hold'}
 rules <- sort(rules, by='confidence', decreasing = TRUE)
 summary(rules)
 ```
@@ -235,7 +248,7 @@ El algoritmo Apriori después de la ejecución ofrece información útil:
 
 
 Dado que el número total de reglas de asociación creadas por el algoritmo es de 6, se realiza la inspección de cada una de ellas.
-```{r}
+```{r, out.width='5%', out.height='60%'}
 inspect(rules[1:6])
 ```
 
