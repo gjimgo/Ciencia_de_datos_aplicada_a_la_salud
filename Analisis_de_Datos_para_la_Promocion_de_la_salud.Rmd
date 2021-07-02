@@ -316,10 +316,3 @@ Mukhopadhyay, A., Maulik, U., Bandyopadhyay, S., & Eils, R. (2010). Mining Assoc
 
 Olukunle, A., & Ehikioya, S. (2002). A Fast Algorithm for Mining Association Rules in Medical Image Data. Proceedingsof the 2002 IEEE Canadian Conference on Electrical & Computer Engineering, 1181.
 
-
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
