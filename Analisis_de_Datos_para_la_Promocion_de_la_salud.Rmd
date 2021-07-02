@@ -1,8 +1,12 @@
 ---
-title: "**$Análisis$ $de$ $datos$ $para$ $la$ $promoción$ $de$ $la$ $salud$**"
+title: '**$Análisis$ $de$ $datos$ $para$ $la$ $promoción$ $de$ $la$ $salud$**'
 author: "$Henry$ $Augusto$ $Salazar$ $Blanco$"
 date: "$Julio$ $1,$ $2021$"
-output: pdf_document
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+  word_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -244,27 +248,28 @@ Gráficamente se puede hacer también un análisis a través de la siguiente sen
 
 ###### Gráfica de forma dispersa
 ```{r}
-#plot(topRules, jitter=0, method = "scatterplot")
+topRules <- rules[1:6]
+plot(topRules, jitter=0, method = "scatterplot")
 ```
 
 
 ###### Gráfica en forma de grafo
 ```{r}
-#plot(topRules, method="graph")
+plot(topRules, method="graph")
 ```
 
 
 ###### Gráfica de forma agrupada
 ```{r}
-#plot(topRules, method = "grouped")
+plot(topRules, method = "grouped")
 ```
 
 
 ### 3.5. Estrategia basada en el dato para la gestión de la sarcopenia en Atlantis.
 
-```{r pressure, echo=FALSE, fig.cap="", out.width = '50%'}
-knitr::include_graphics("D:/Downloads/Ciencia_de_datos_aplicada_a_la_salud/Salidas/punto5.jpg", auto_pdf = getOption("knitr.graphics.auto_pdf",FALSE))
-```
+
+![](D:/Downloads/Ciencia_de_datos_aplicada_a_la_salud/punto5.png)
+
 
 _Gráfico tomado de “Hacia un cuidado de la salud basado en los datos”, Juan José Casado, Harvard Deusto Business Review_
 
@@ -279,9 +284,7 @@ Finalmente, el presente modelo contribuiría a tratamientos más eficaces y a vi
 
 ### 3.6. Limitaciones que tienen las reglas de asociación como herramienta de data mining.
 
-```{r pressure, echo=FALSE, fig.cap="", out.width = '50%'}
-knitr::include_graphics("D:/Downloads/Ciencia_de_datos_aplicada_a_la_salud/Salidas/punto6.jpg", auto_pdf = getOption("knitr.graphics.auto_pdf",FALSE))
-```
+![](D:/Downloads/Ciencia_de_datos_aplicada_a_la_salud/punto6.png)
 _Clasificación y relación entre los diferentes algoritmos de minería de datos (Minería de datos educativa: Una herramienta para la investigación de patrones de aprendizaje sobre un contexto educativo Alejandro Ballesteros Román, Daniel Sánchez-Guzmán and Ricardo García Salcedo, 2013)_
 
 Las Reglas de Asociación son un instrumento muy importante para encontrar relaciones entre variables, sobre todo cuando se está manejando una gran cantidad de datos; por ésta razón pueden ser de gran apoyo para el área de la salud, por ejemplo, en la epidemiología, permiten lograr que los datos cumplan criterios para ser leídos de forma completa, agrupada, y con óptimos niveles de confiabilidad y comparabilidad (como ocurre en la estimación del riesgo de una enfermedad) (Merchán, 2011).
